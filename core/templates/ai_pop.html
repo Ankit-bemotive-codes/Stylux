@@ -1,0 +1,29 @@
+<section class="ai-chat" data-ai-chat>
+	<button class="ai-chat-launcher" type="button" data-ai-toggle aria-expanded="false" aria-controls="aiChatPanel">
+		<span class="ai-chat-launcher-icon" aria-hidden="true">✦</span>
+		<span>Ask about jewellery</span>
+	</button>
+
+	<div class="ai-chat-panel" id="aiChatPanel" hidden>
+		<div class="ai-chat-header">
+			<div>
+				<span class="ai-chat-kicker"><span class="ai-chat-status-dot" aria-hidden="true"></span>Personal concierge</span>
+				<h2>Find your piece</h2>
+				<p>Thoughtful styling, one question away.</p>
+			</div>
+			<button class="ai-chat-close" type="button" data-ai-toggle aria-label="Close jewellery assistant">&times;</button>
+		</div>
+
+		<div class="ai-chat-messages" data-ai-messages aria-live="polite">
+			<div class="ai-chat-message ai-chat-message-bot">Tell me what you are looking for and I will help you discover a piece.</div>
+		</div>
+
+		<form class="ai-chat-form" data-ai-form action="{% url "ai_chat" %}" method="post">
+			{% csrf_token %}
+			    <label class="visually-hidden" for="aiChatInput">Ask about jewellery</label>
+			    <input type="text" id="aiChatInput" name="user_input" maxlength="500" placeholder="Ask about jewellery..." required>
+			    <button type="submit" aria-label="Send message">Send</button>
+		</form>
+		<p class="ai-chat-status" data-ai-status role="status"></p>
+	</div>
+</section>

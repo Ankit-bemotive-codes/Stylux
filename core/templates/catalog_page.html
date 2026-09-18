@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ page_title }} — Group b</title>
+<meta name="description" content="{{ page_description }}">
+<script src="{% static "js/theme-init.js" %}"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static "css/style.css" %}?v=5">
+</head>
+<body data-page="{{ page_key }}">
+{% include "navbar.html" %}
+
+<section class="cat-hero">
+  <div class="container-shop" data-parallax="0.06">
+    <nav class="breadcrumb-shop mb-3" style="font-family: var(--font-mono); font-size:.8rem;">
+      <a href="{% url "home" %}">Home</a> <span class="mx-1" style="opacity:.5;">/</span> <span class="current">{{ page_title }}</span>
+    </nav>
+    <span class="eyebrow">{{ products|length }} pieces</span>
+    <h1 class="mt-2 mb-2">{{ page_title }}</h1>
+    <p style="opacity:.75; max-width: 560px;">{{ page_description }}</p>
+  </div>
+</section>
+
+<section class="py-5 reveal-on-scroll" data-reveal="scale">
+  <div class="container-shop">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Made for your moments</span>
+        <h2>Discover the edit</h2>
+      </div>
+      <span style="font-family: var(--font-mono); font-size:.82rem; opacity:.6;">{{ products|length }} products</span>
+    </div>
+    {% if products %}
+    <div class="row g-4">
+      {% for product in products %}
+        {% include "product_card.html" with product=product %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-cart">
+      <div style="font-size: 3rem;">◇</div>
+      <h2 class="mt-3">This collection is being curated</h2>
+      <p style="opacity:.7;">Add the first piece from the Django admin to bring this edit to life.</p>
+      <a href="{% url "home" %}" class="btn-shop btn-shop-primary mt-2">Return home</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include "footer.html" %}
+{% include "ai_pop.html" %}
+<div id="cartToastWrap" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static "js/cart.js" %}?v=2"></script>
+<script src="{% static "js/include.js" %}?v=3"></script>
+<script src="{% static "js/ai-chat.js" %}?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{% load static %}
+<div class="col-6 col-md-4 col-lg-3 reveal-on-scroll" data-reveal="scale">
+  <div class="product-card" data-product data-id="{{ product.pk }}" data-name="{{ product.name }}" data-price="{{ product.price }}"{% if product.local_image_url %} data-image="{{ product.local_image_url }}"{% endif %} data-category="{{ product.category.name }}">
+    <div class="product-media">
+      <button class="wishlist-btn" type="button" aria-label="Add {{ product.name }} to wishlist">♡</button>
+      {% if product.local_image_url %}<img src="{{ product.local_image_url }}" alt="{{ product.name }}" loading="lazy">{% endif %}
+    </div>
+    <div class="product-body">
+      <div class="product-cat">{{ product.category.name }}</div>
+      <h3 class="product-name">{{ product.name }}</h3>
+      {% if product.description %}<p class="small mb-2" style="opacity:.65;">{{ product.description|truncatechars:68 }}</p>{% endif %}
+      <div class="product-footer">
+        <span class="swing-tag">₹{{ product.price|floatformat:0 }}{% if product.original_price %} <span class="was">₹{{ product.original_price|floatformat:0 }}</span>{% endif %}</span>
+        <button class="add-cart-btn" type="button" data-add-to-cart aria-label="Add {{ product.name }} to cart">+</button>
+      </div>
+    </div>
+  </div>
+</div>

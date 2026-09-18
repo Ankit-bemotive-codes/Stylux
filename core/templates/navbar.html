@@ -1,0 +1,74 @@
+<!-- ============================================================
+     SHARED NAVIGATION BAR
+     This file is injected into every page by js/include.js via
+     fetch('navbar.html'). Edit this ONE file to change the nav
+     site-wide. Links use data-page to auto-highlight the active
+     route — see js/include.js.
+     ============================================================ -->
+{% load static %}
+<div class="announce-bar">
+  Complimentary shipping on orders over ₹5000 &nbsp;·&nbsp; <strong>New collection: The Heirloom Edit</strong> &nbsp;·&nbsp; Lifetime exchange support
+</div>
+
+<nav class="navbar navbar-expand-lg shop-navbar py-3">
+  <div class="container-shop">
+
+    <a class="navbar-brand" href="{% url "home" %}">sty<span>lux</span></a>
+
+    <button class="nav-icon-btn theme-toggle d-lg-none" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">
+      <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m0 1a4 4 0 1 1 0-8 4 4 0 0 1 0 8M8 0a.5.5 0 0 1 .5.5v1.25a.5.5 0 0 1-1 0V.5A.5.5 0 0 1 8 0m0 13.75a.5.5 0 0 1 .5.5v1.25a.5.5 0 0 1-1 0v-1.25a.5.5 0 0 1 .5-.5M16 8a.5.5 0 0 1-.5.5h-1.25a.5.5 0 0 1 0-1h1.25A.5.5 0 0 1 16 8M1.75 8a.5.5 0 0 1-.5.5H0a.5.5 0 0 1 0-1h1.25a.5.5 0 0 1 .5.5m11.314-5.314a.5.5 0 0 1 0 .707l-.884.884a.5.5 0 1 1-.707-.707l.884-.884a.5.5 0 0 1 .707 0M3.523 11.77a.5.5 0 0 1 0 .707l-.884.884a.5.5 0 1 1-.707-.707l.884-.884a.5.5 0 0 1 .707 0m0-8.547a.5.5 0 0 1-.707 0l-.884-.884a.5.5 0 1 1-.707-.707l.884.884a.5.5 0 0 1 0 .707m8.547 8.547a.5.5 0 0 1-.707 0l-.884-.884a.5.5 0 1 1-.707-.707l.884.884a.5.5 0 0 1 .707 0"/></svg>
+      <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0 9.784 9.785.77.77 0 0 1 .858.08A8 8 0 1 1 6 .278"/></svg>
+    </button>
+
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#shopNav" aria-controls="shopNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- category section -->
+    
+    <div class="collapse navbar-collapse" id="shopNav" >
+      <ul class="navbar-nav mx-lg-auto my-3 my-lg-0 gap-lg-1">
+        <li class="nav-item"><a class="nav-link shop-nav-link" data-page="home" href="{% url "home" %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link shop-nav-link" data-page="new_arrivals" href="{% url "new_arrivals" %}">New Arrivals</a></li>
+        <li class="nav-item"><a class="nav-link shop-nav-link" data-page="gold_jewellery" href="{% url "gold_jewellery" %}">Gold Jewellery</a></li>
+        <li class="nav-item"><a class="nav-link shop-nav-link" data-page="diamond_jewellery" href="{% url "diamond_jewellery" %}">Diamond Jewellery</a></li>
+        <li class="nav-item"><a class="nav-link shop-nav-link" data-page="bridal" href="{% url "bridal" %}">Bridal</a></li>
+        <li class="nav-item"><a class="nav-link shop-nav-link" data-page="collections" href="{% url "collections" %}">Collections</a></li>
+        <li class="nav-item"><a class="nav-link shop-nav-link offer-link" data-page="offers" href="{% url "offers" %}">Offers</a></li>
+      </ul>
+            
+      <!-- search section and cart section -->
+
+      <div class="d-flex align-items-center gap-2 flex-column flex-lg-row">
+        <form class="shop-search d-none d-md-flex align-items-center" role="search" action="{% url "search" %}" method="get" autocomplete="off">
+          <input type="search" name="q" placeholder="Search products..." aria-label="Search products" value="{{ request.GET.q|default:'' }}" required>
+          <div class="search-suggestions" role="listbox" aria-label="Product suggestions"></div>
+          <div class="search-index" hidden>
+            {% for product in products %}<span data-search-product data-name="{{ product.name }}" data-category="{{ product.category.name }}"></span>{% endfor %}
+          </div>
+          <button type="submit" aria-label="Search">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg>
+          </button>
+        </form>
+        <button class="nav-icon-btn theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">
+          <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m0 1a4 4 0 1 1 0-8 4 4 0 0 1 0 8M8 0a.5.5 0 0 1 .5.5v1.25a.5.5 0 0 1-1 0V.5A.5.5 0 0 1 8 0m0 13.75a.5.5 0 0 1 .5.5v1.25a.5.5 0 0 1-1 0v-1.25a.5.5 0 0 1 .5-.5M16 8a.5.5 0 0 1-.5.5h-1.25a.5.5 0 0 1 0-1h1.25A.5.5 0 0 1 16 8M1.75 8a.5.5 0 0 1-.5.5H0a.5.5 0 0 1 0-1h1.25a.5.5 0 0 1 .5.5m11.314-5.314a.5.5 0 0 1 0 .707l-.884.884a.5.5 0 1 1-.707-.707l.884-.884a.5.5 0 0 1 .707 0M3.523 11.77a.5.5 0 0 1 0 .707l-.884.884a.5.5 0 1 1-.707-.707l.884-.884a.5.5 0 0 1 .707 0m0-8.547a.5.5 0 0 1-.707 0l-.884-.884a.5.5 0 1 1 .707-.707l.884.884a.5.5 0 0 1 0 .707m8.547 8.547a.5.5 0 0 1-.707 0l-.884-.884a.5.5 0 1 1 .707-.707l.884.884a.5.5 0 0 1 0 .707"/></svg>
+          <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0 9.784 9.785.77.77 0 0 1 .858.08A8 8 0 1 1 6 .278"/></svg>
+        </button>
+        <a href="{% url "cart" %}" class="btn-shop btn-shop-outline d-flex align-items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0-0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0-0-4zm-7 1a1 1 0 1 1-2 0 1 1 0 1 1 2 0zm7-1a1 1 0 1 1-2 0 1 1 0 1 1 2 0z"/></svg>
+          <span id="navCartCount" aria-live="polite">0</span>
+          <span class="d-none d-md-inline">Cart</span>
+        </a>
+        {% if user.is_authenticated %}
+          <form method="post" action="{% url 'logout' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn-shop btn-shop-primary">Logout</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-shop btn-shop-primary">Login</a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</nav>

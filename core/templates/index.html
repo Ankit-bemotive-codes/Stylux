@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+{% load static %}
+{% get_media_prefix as media_prefix %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Group b — Jewellery for every chapter</title>
+<meta name="description" content="Discover trusted gold and diamond jewellery for every celebration.">
+<script src="{% static "js/theme-init.js" %}"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static "css/style.css" %}?v=5">
+</head>
+<body data-page="home">
+{% include "navbar.html" %}
+
+<section class="hero-shop">
+  <div class="container-shop">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <span class="eyebrow">The Heirloom Edit · New collection</span>
+        <h1 class="mt-2 mb-3">Made to be<br>remembered.</h1>
+        <p class="lead mb-4">Timeless gold and diamond jewellery, designed for the moments that become family stories.</p>
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="{% url "new_arrivals" %}" class="btn-shop btn-shop-primary">Explore the collection</a>
+          <a href="{% url "bridal" %}" class="btn-shop btn-shop-outline">Discover bridal</a>
+        </div>
+        <div class="d-flex gap-4 mt-5 flex-wrap">
+          <div class="hero-stat"><span class="num">22K+</span><span class="label">Happy families</span></div>
+          <div class="hero-stat"><span class="num">100%</span><span class="label">BIS hallmarked</span></div>
+          <div class="hero-stat"><span class="num">30 yrs</span><span class="label">Of trust</span></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="hero-visual mx-auto" style="max-width: 420px;" data-parallax="0.12">
+          <div class="hero-card">
+            <img src="{{ media_prefix }}Media/-473Wx593H-702463602-gold-MODEL.avif" alt="Gold jewellery on a warm stone surface">
+          </div>
+          <div class="hero-float-card card-top">
+            <span class="swing-tag">22K GOLD</span>
+            <small class="d-none d-sm-block" style="font-family: var(--font-body); font-weight:600;">A quiet kind of brilliance</small>
+          </div>
+          <div class="hero-float-card card-bottom">
+            <div style="width:34px;height:34px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-mono);font-size:.8rem;">★</div>
+            <small style="font-family: var(--font-body); font-weight:600;">Certified purity, always</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-4 reveal-on-scroll" data-reveal="slide-left">
+  <div class="container-shop">
+    <div class="stall-row">
+      <a href="{% url "new_arrivals" %}" class="stall-chip">New arrivals</a>
+      <a href="{% url "gold_jewellery" %}" class="stall-chip">Gold jewellery</a>
+      <a href="{% url "diamond_jewellery" %}" class="stall-chip">Diamond jewellery</a>
+      <a href="{% url "bridal" %}" class="stall-chip">Bridal edit</a>
+      <a href="{% url "collections" %}" class="stall-chip">Everyday wear</a>
+      <a href="{% url "offers" %}" class="stall-chip">Festive offers</a>
+    </div>
+  </div>
+</section>
+
+<section class="py-4 reveal-on-scroll" data-reveal="scale">
+  <div class="container-shop">
+    <div class="section-head">
+      <div><span class="eyebrow">Curated with intention</span><h2>Pieces to keep close</h2></div>
+      <a href="{% url "new_arrivals" %}" class="btn-shop btn-shop-outline">View all</a>
+    </div>
+    {% if featured_products %}
+    <div class="row g-4">
+      {% for product in featured_products %}{% include "product_card.html" with product=product %}{% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-cart"><h2>Curating something beautiful</h2><p style="opacity:.7;">Mark products as featured in the Django admin to show them here.</p></div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="py-5 reveal-on-scroll">
+  <div class="container-shop"><div class="offer-banner reveal-on-scroll" data-reveal="slide-right"><div class="row align-items-center g-4"><div class="col-lg-8">
+    <span class="eyebrow" style="color: var(--coral);">A reason to celebrate</span>
+    <h3 class="mt-2 mb-2">A little more sparkle for the celebrations ahead.</h3>
+    <p class="mb-4" style="opacity:.8; max-width:480px;">Enjoy special making charges on selected designs, with complimentary insured delivery.</p>
+    <a href="{% url "offers" %}" class="btn-shop btn-shop-primary">View festive offers</a>
+  </div></div></div></div>
+</section>
+
+
+
+{% include "footer.html" %}
+{% include "ai_pop.html" %}
+<div id="cartToastWrap" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static "js/cart.js" %}?v=2"></script>
+<script src="{% static "js/include.js" %}?v=3"></script>
+<script src="{% static "js/ai-chat.js" %}?v=1"></script>
+</body>
+</html>
