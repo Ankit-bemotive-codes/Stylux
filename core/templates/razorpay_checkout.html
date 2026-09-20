@@ -1,0 +1,60 @@
+{% block content %}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<div style="text-align: center; margin-top: 100px; max-width: 520px; margin-left: auto; margin-right: auto; padding: 32px 20px; border-radius: 18px; background: #fffaf7; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+    <h2>Processing Payment...</h2>
+    <p style="margin-bottom: 20px; color: #555;">Do not refresh or close this window.</p>
+    <button id="rzp-button1" style="display:none;">Pay Now</button>
+</div>
+
+<form id="razorpay-form" action="{% url 'payment_callback' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+    <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+    <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+</form>
+
+<script>
+    var options = {
+        key: "{{ razorpay_key_id }}",
+        amount: "{{ amount }}",
+        currency: "{{ currency }}",
+        name: "Juelary",
+        image: "https://razorpay.com/favicon.png",
+        description: "Order Payment #{{ order.order_tracking_number }}",
+        order_id: "{{ razorpay_order_id }}",
+        handler: function (response) {
+            document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+            document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+            document.getElementById('razorpay_signature').value = response.razorpay_signature;
+            document.getElementById('razorpay-form').submit();
+        },
+        prefill: {
+            name: "{{ request.user.get_full_name|default:request.user.username }}",
+            email: "{{ request.user.email|default:'customer@example.com' }}"
+        },
+        theme: {
+            color: "#c77d5a"
+        },
+        modal: {
+            ondismiss: function () {
+                window.location.href = "{% url 'checkout' %}";
+            }
+        }
+    };
+
+    window.addEventListener('load', function () {
+        if (typeof Razorpay === 'undefined') {
+            document.querySelector('h2').textContent = 'Payment gateway unavailable';
+            document.querySelector('p').textContent = 'Please return to checkout and try again.';
+            return;
+        }
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    });
+</script>
+
+
+{% endblock content %}

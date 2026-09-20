@@ -11,9 +11,69 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{% static "css/style.css" %}?v=5">
+<style>
+  .payment-success-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    display: grid;
+    place-items: center;
+    padding: 1.25rem;
+    background: rgba(24, 18, 15, .68);
+    backdrop-filter: blur(6px);
+  }
+
+  .payment-success-card {
+    width: min(100%, 430px);
+    padding: 2.4rem;
+    text-align: center;
+    color: #2a211d;
+    background: #fffaf7;
+    border: 1px solid rgba(181, 106, 85, .25);
+    border-radius: 18px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .3);
+    animation: payment-success-pop .35s ease-out both;
+  }
+
+  .payment-success-mark {
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 1.2rem;
+    color: #fff;
+    background: #b56a55;
+    border-radius: 50%;
+    font-size: 2rem;
+  }
+
+  @keyframes payment-success-pop {
+    from { opacity: 0; transform: translateY(12px) scale(.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+</style>
 </head>
 <body data-page="home">
 {% include "navbar.html" %}
+
+{% if payment_success_order %}
+<div class="payment-success-popup" id="paymentSuccessPopup" role="dialog" aria-modal="true" aria-labelledby="paymentSuccessTitle">
+  <div class="payment-success-card">
+    <div class="payment-success-mark" aria-hidden="true">✓</div>
+    <span class="eyebrow">Payment successful</span>
+    <h2 id="paymentSuccessTitle" class="mt-2 mb-2">Your order is confirmed</h2>
+    <p class="mb-2">Thank you for your purchase. We are preparing your jewellery for delivery.</p>
+    <p class="mb-4" style="opacity: .7;">Order ID: {{ payment_success_order.order_id }}</p>
+    <button type="button" class="btn-shop btn-shop-primary w-100" id="closePaymentSuccess">Continue shopping</button>
+  </div>
+</div>
+<script>
+  document.getElementById('closePaymentSuccess')?.addEventListener('click', function () {
+    document.getElementById('paymentSuccessPopup')?.remove();
+    window.history.replaceState({}, document.title, window.location.pathname);
+  });
+</script>
+{% endif %}
 
 <section class="hero-shop">
   <div class="container-shop">

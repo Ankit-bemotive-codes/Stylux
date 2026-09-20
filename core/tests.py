@@ -1,9 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from unittest.mock import patch
+
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Address, Category, Product
+from .models import Address, Category, Ecomm_order, Product
 
 
 class ProductStorefrontTests(TestCase):
@@ -165,3 +167,68 @@ class ProductStorefrontTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Address.objects.filter(user=user, address_line1="New House", is_default=True).exists())
         self.assertFalse(Address.objects.get(pk=existing.pk).is_default)
+
+    def test_guest_cannot_place_order_without_logging_in(self):
+        response = self.client.post(reverse("checkout"), {
+            "place_order": "1",
+            "payment_method": "online",
+            "order_items": "[]",
+        })
+
+        self.assertRedirects(response, f"{reverse('login')}?next={reverse('checkout')}")
+
+    def test_inactive_product_cannot_be_ordered(self):
+        user = get_user_model().objects.create_user(username="inactiveorderuser", password="pass1234")
+        address = Address.objects.create(
+            user=user,
+            address_line1="1 Test Street",
+            city="Delhi",
+            state="Delhi",
+            postal_code="110001",
+            country="India",
+        )
+        inactive_product = Product.objects.create(
+            name="Inactive Product",
+            category=self.gold_category,
+            price=1000,
+            is_active=False,
+        )
+        self.client.force_login(user)
+
+        response = self.client.post(reverse("checkout"), {
+            "place_order": "1",
+            "payment_method": "cod",
+            "selected_address_id": address.pk,
+            "address_mode": "saved",
+            "order_items": f'[{"{"} "id": {inactive_product.pk}, "qty": 1 {"}"}]',
+        })
+
+        self.assertRedirects(response, reverse("checkout"))
+        self.assertFalse(Ecomm_order.objects.filter(user=user).exists())
+
+    @patch("core.views.razor_client.order.create")
+    def test_online_checkout_renders_razorpay_page(self, create_order):
+        user = get_user_model().objects.create_user(username="onlineorderuser", password="pass1234")
+        address = Address.objects.create(
+            user=user,
+            address_line1="2 Test Street",
+            city="Delhi",
+            state="Delhi",
+            postal_code="110001",
+            country="India",
+        )
+        self.client.force_login(user)
+        create_order.return_value = {"id": "order_test_123"}
+
+        response = self.client.post(reverse("checkout"), {
+            "place_order": "1",
+            "payment_method": "online",
+            "selected_address_id": address.pk,
+            "address_mode": "saved",
+            "order_items": f'[{"{"} "id": {self.featured.pk}, "qty": 1 {"}"}]',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "razorpay_checkout.html")
+        self.assertContains(response, "order_test_123")
+        create_order.assert_called_once()

@@ -19,6 +19,7 @@ urlpatterns = [
     path('offers/', offers, name="offers"),
     path('new-arrivals/', new_arrivals, name="new_arrivals"),
     path('checkout/', checkout, name="checkout"),
+    path('payment_callback/', payment_callback, name='payment_callback'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     

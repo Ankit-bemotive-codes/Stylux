@@ -473,13 +473,12 @@
           {% endif %}
 
           <div id="new-address-panel" class="col-12 address-panel" {% if user.is_authenticated %}style="display:none;"{% endif %}>
-            <input type="hidden" name="address_mode" value="new">
+            <input type="hidden" name="address_mode" id="newAddressMode" value="new">
             <div class="mini-label mb-3">Add a new address</div>
 
             <div class="col-12 px-0 mb-3">
               <div class="form-floating">
                 <input type="text" class="form-control" name="address_line1" id="address_line1" placeholder="Street address" required>
-                
               </div>
             </div>
 
@@ -522,7 +521,11 @@
             </div>
 
             {% if user.is_authenticated %}
-              <div class="col-12 px-0 mt-3 d-flex justify-content-end">
+              <div class="col-12 px-0 mt-3 d-flex justify-content-between align-items-center">
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" type="checkbox" id="set_as_default" name="set_as_default">
+                  <label class="form-check-label" for="set_as_default">Set as default address</label>
+                </div>
                 <button type="submit" name="save_address" value="save_and_default" class="btn btn-sm btn-shop-primary px-4" form="addressForm">
                   Save address
                 </button>
@@ -531,68 +534,10 @@
           </div>
 
           {% if not user.is_authenticated %}
-            <div class="col-md-6">
-              <div class="form-floating">
-                <input type="text" class="form-control" id="firstName" placeholder="First name" required>
-                
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-floating">
-                <input type="text" class="form-control" id="lastName" placeholder="Last name" required>
-              
-              </div>
-            </div>
-
             <div class="col-12">
-              <div class="form-floating">
-                <input type="email" class="form-control" id="email" placeholder="Email address" required>
-                
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="form-floating">
-                <input type="text" class="form-control" id="address" placeholder="Street address" required>
-                
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="form-floating">
-                <input type="text" class="form-control" id="city" placeholder="City" required>
-               
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-floating">
-                <input type="text" class="form-control" id="state" placeholder="State" required>
-               
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-floating">
-                <input type="text" class="form-control" id="zip" placeholder="PIN code" required>
-                <label for="zip">PIN code</label>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-floating">
-                <select class="form-select" id="country" aria-label="Country">
-                  <option selected>India</option>
-                  <option>United States</option>
-                  <option>United Kingdom</option>
-                  <option>United Arab Emirates</option>
-                </select>
-                <label for="country">Country</label>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-floating">
-                <input type="tel" class="form-control" id="phone" placeholder="Phone number" required>
-                <label for="phone">Phone number</label>
+              <div class="alert alert-light border mb-0">
+                Please sign in before placing your order so we can save your delivery address.
+                <a href="{% url 'login' %}?next={% url 'checkout' %}" class="alert-link">Sign in to continue</a>
               </div>
             </div>
           {% endif %}
@@ -602,28 +547,21 @@
             <h2 class="h3 mb-3">Choose a payment method</h2>
 
             <div class="d-flex flex-wrap gap-3">
-              
-              <div class="payment-pill flex-grow-1" data-method="upi">
+              <div class="payment-pill flex-grow-1 active" data-method="online">
+                <div class="form-check mt-2 mb-2">
+                  <input class="form-check-input" type="radio" name="payment_method_choice" id="payment_online" value="online" checked>
+                  <label class="form-check-label" for="payment_online">Pay Online</label>
+                </div>
                 <div class="fw-semibold">UPI</div>
                 <small class="text-muted">GPay / PhonePe</small>
               </div>
               <div class="payment-pill flex-grow-1" data-method="cod">
+                <div class="form-check mt-2 mb-2">
+                  <input class="form-check-input" type="radio" name="payment_method_choice" id="payment_cod" value="cod">
+                  <label class="form-check-label" for="payment_cod">Cash on Delivery</label>
+                </div>
                 <div class="fw-semibold">Cash on Delivery</div>
                 <small class="text-muted">Pay on arrival</small>
-              </div>
-            </div>
-          </div>
-
-          
-          <div class="col-12 mt-4">
-            <div class="gift-box d-flex align-items-center justify-content-between gap-3 flex-wrap">
-              <div>
-                <div class="mini-label">Luxury wrap</div>
-                <div class="fw-semibold">Add a signature gift box</div>
-              </div>
-              <div class="form-check form-switch mb-0">
-                <input class="form-check-input" type="checkbox" id="giftWrap" checked>
-                <label class="form-check-label" for="giftWrap">₹50</label>
               </div>
             </div>
           </div>
@@ -669,7 +607,15 @@
         <form method="post" class="d-block" id="checkoutOrderForm">
           {% csrf_token %}
           <input type="hidden" name="place_order" value="1">
-          <input type="hidden" name="payment_method" id="paymentMethodField" value="cod">
+          <input type="hidden" name="payment_method" id="paymentMethodField" value="online">
+          <input type="hidden" name="selected_address_id" id="selectedAddressField" value="">
+          <input type="hidden" name="address_mode" id="addressModeField" value="saved">
+          <input type="hidden" name="address_line1" id="addressLine1Field" value="">
+          <input type="hidden" name="address_line2" id="addressLine2Field" value="">
+          <input type="hidden" name="city" id="cityField" value="">
+          <input type="hidden" name="state" id="stateField" value="">
+          <input type="hidden" name="postal_code" id="postalCodeField" value="">
+          <input type="hidden" name="country" id="countryField" value="">
           <input type="hidden" name="order_items" id="orderItemsField" value='[]'>
           <button class="btn-shop btn-shop-primary w-100 mt-4" id="placeOrderBtn" type="submit">Place order</button>
         </form>
@@ -790,6 +736,38 @@
       orderItemsField.value = JSON.stringify(window.ShopCart ? window.ShopCart.getCart() : []);
     }
 
+    function syncSelectedAddressToOrderForm() {
+      const selectedAddressRadio = document.querySelector('input[name="selected_address_id"]:checked');
+      const selectedAddressField = document.getElementById('selectedAddressField');
+      if (selectedAddressField) {
+        selectedAddressField.value = selectedAddressRadio ? selectedAddressRadio.value : '';
+      }
+
+      const addressModeField = document.getElementById('addressModeField');
+      const savedPanel = document.getElementById('saved-address-panel');
+      const newPanel = document.getElementById('new-address-panel');
+      if (addressModeField) {
+        if (savedPanel && newPanel) {
+          const usingSaved = savedPanel.style.display !== 'none' && savedPanel.style.display !== 'hidden';
+          addressModeField.value = usingSaved ? 'saved' : 'new';
+        } else {
+          addressModeField.value = 'saved';
+        }
+      }
+    }
+
+    function syncPaymentMethodToOrderForm() {
+      const selectedPayment = document.querySelector('input[name="payment_method_choice"]:checked');
+      const paymentField = document.getElementById('paymentMethodField');
+      if (selectedPayment && paymentField) {
+        paymentField.value = selectedPayment.value;
+      }
+      document.querySelectorAll('.payment-pill').forEach(function (pill) {
+        const radio = pill.querySelector('input[name="payment_method_choice"]');
+        pill.classList.toggle('active', radio && radio.checked);
+      });
+    }
+
     document.querySelectorAll('.address-mode-btn').forEach(function (button) {
       button.addEventListener('click', function () {
         const mode = button.dataset.mode;
@@ -804,34 +782,63 @@
           if (mode === 'saved') {
             savedPanel.style.display = 'block';
             newPanel.style.display = 'none';
-            newPanel.querySelector('input[name="address_mode"]').value = 'saved';
           } else {
             savedPanel.style.display = 'none';
             newPanel.style.display = 'block';
-            newPanel.querySelector('input[name="address_mode"]').value = 'new';
           }
+        }
+
+        syncSelectedAddressToOrderForm();
+      });
+    });
+
+    document.querySelectorAll('input[name="selected_address_id"]').forEach(function (radio) {
+      radio.addEventListener('change', syncSelectedAddressToOrderForm);
+    });
+
+    document.querySelectorAll('input[name="payment_method_choice"]').forEach(function (radio) {
+      radio.addEventListener('change', syncPaymentMethodToOrderForm);
+    });
+
+    document.querySelectorAll('.payment-pill').forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        const radio = pill.querySelector('input[name="payment_method_choice"]');
+        if (radio) {
+          radio.checked = true;
+          syncPaymentMethodToOrderForm();
         }
       });
     });
 
     document.getElementById('giftWrap')?.addEventListener('change', renderCheckoutSummary);
 
-    document.querySelectorAll('.payment-pill').forEach(function (pill) {
-      pill.addEventListener('click', function () {
-        document.querySelectorAll('.payment-pill').forEach(function (item) {
-          item.classList.remove('active');
-        });
-        pill.classList.add('active');
-      });
-    });
-
-    document.getElementById('placeOrderBtn')?.addEventListener('click', function (event) {
+    document.getElementById('checkoutOrderForm')?.addEventListener('submit', function (event) {
       const cart = window.ShopCart ? window.ShopCart.getCart() : [];
       const form = document.getElementById('checkoutOrderForm');
+      event.preventDefault();
       const visibleRequiredFields = document.querySelectorAll('.needs-validation [required]');
       const hasInvalidField = Array.from(visibleRequiredFields).some(function (field) {
         return field.offsetParent !== null && !field.checkValidity();
       });
+
+      syncSelectedAddressToOrderForm();
+      syncPaymentMethodToOrderForm();
+
+      const addressModeField = document.getElementById('addressModeField');
+      const savedPanel = document.getElementById('saved-address-panel');
+      const newPanel = document.getElementById('new-address-panel');
+      if (addressModeField && savedPanel && newPanel) {
+        addressModeField.value = savedPanel.style.display !== 'none' && savedPanel.style.display !== 'hidden' ? 'saved' : 'new';
+      }
+
+      if (newPanel && newPanel.style.display !== 'none' && newPanel.style.display !== 'hidden') {
+        document.getElementById('addressLine1Field').value = document.getElementById('address_line1')?.value || '';
+        document.getElementById('addressLine2Field').value = document.getElementById('address_line2')?.value || '';
+        document.getElementById('cityField').value = document.getElementById('city')?.value || '';
+        document.getElementById('stateField').value = document.getElementById('state')?.value || '';
+        document.getElementById('postalCodeField').value = document.getElementById('postal_code')?.value || '';
+        document.getElementById('countryField').value = document.getElementById('country')?.value || '';
+      }
 
       if (!cart.length) {
         event.preventDefault();
@@ -845,22 +852,18 @@
         return;
       }
 
-      const paymentField = document.getElementById('paymentMethodField');
       const itemsField = document.getElementById('orderItemsField');
-      if (paymentField) {
-        paymentField.value = document.querySelector('.payment-pill.active')?.dataset.method || 'cod';
-      }
       if (itemsField) {
         itemsField.value = JSON.stringify(cart);
       }
 
-      const successPanel = document.getElementById('orderSuccess');
       const placeOrderButton = document.getElementById('placeOrderBtn');
       placeOrderButton.disabled = true;
-      successPanel?.classList.add('is-visible');
-      successPanel?.setAttribute('aria-hidden', 'false');
-      form?.submit();
+      form.submit();
     });
+
+    syncSelectedAddressToOrderForm();
+    syncPaymentMethodToOrderForm();
   });
 </script>
 </body>
