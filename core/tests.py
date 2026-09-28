@@ -97,6 +97,17 @@ class ProductStorefrontTests(TestCase):
         self.assertContains(response, "Saved addresses")
         self.assertContains(response, "12 Market Street")
 
+    def test_checkout_shows_new_address_form_when_user_has_no_saved_addresses(self):
+        user = get_user_model().objects.create_user(username="firstaddressuser", password="pass1234")
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("checkout"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'id="new-address-panel"')
+        self.assertNotContains(response, 'id="new-address-panel" class="col-12 address-panel" style="display:none;"')
+        self.assertContains(response, 'data-mode="new">Add an address</button>')
+
     def test_checkout_saves_new_address_for_logged_in_user(self):
         user = get_user_model().objects.create_user(username="newaddressuser", password="pass1234")
         self.client.force_login(user)

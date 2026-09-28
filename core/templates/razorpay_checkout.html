@@ -4,8 +4,9 @@
 
 <div style="text-align: center; margin-top: 100px; max-width: 520px; margin-left: auto; margin-right: auto; padding: 32px 20px; border-radius: 18px; background: #fffaf7; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
     <h2>Processing Payment...</h2>
-    <p style="margin-bottom: 20px; color: #555;">Do not refresh or close this window.</p>
-    <button id="rzp-button1" style="display:none;">Pay Now</button>
+    <p id="payment-status" style="margin-bottom: 20px; color: #555;">Opening secure payment...</p>
+    <button id="rzp-button1" type="button">Open Razorpay Checkout</button>
+    <p><a href="{% url 'checkout' %}">Return to checkout</a></p>
 </div>
 
 <form id="razorpay-form" action="{% url 'payment_callback' %}" method="POST">
@@ -44,16 +45,19 @@
         }
     };
 
-    window.addEventListener('load', function () {
+    function openRazorpayCheckout() {
         if (typeof Razorpay === 'undefined') {
             document.querySelector('h2').textContent = 'Payment gateway unavailable';
-            document.querySelector('p').textContent = 'Please return to checkout and try again.';
+            document.getElementById('payment-status').textContent = 'Please check your connection, then try again or return to checkout.';
             return;
         }
 
-        var rzp1 = new Razorpay(options);
-        rzp1.open();
-    });
+        var razorpayCheckout = new Razorpay(options);
+        razorpayCheckout.open();
+    }
+
+    document.getElementById('rzp-button1').addEventListener('click', openRazorpayCheckout);
+    document.addEventListener('DOMContentLoaded', openRazorpayCheckout, { once: true });
 </script>
 
 

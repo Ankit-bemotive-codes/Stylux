@@ -429,8 +429,6 @@
           <span class="badge rounded-pill bg-light text-dark border px-3 py-2">2-4 days</span>
         </div>
 
-
-""" address"""
         
         <div class="mb-4">
           <div class="mini-label">Address</div>
@@ -438,8 +436,10 @@
 
           {% if user.is_authenticated %}
             <div class="d-flex flex-wrap gap-2 mb-3">
-              <button type="button" class="btn btn-sm btn-outline-light active address-mode-btn" data-mode="saved">Saved addresses</button>
-              <button type="button" class="btn btn-sm btn-outline-light address-mode-btn" data-mode="new">Add an address</button>
+              {% if saved_addresses %}
+                <button type="button" class="btn btn-sm btn-outline-light active address-mode-btn" data-mode="saved">Saved addresses</button>
+              {% endif %}
+              <button type="button" class="btn btn-sm btn-outline-light address-mode-btn{% if not saved_addresses %} active{% endif %}" data-mode="new">Add an address</button>
             </div>
           {% endif %}
         </div>
@@ -472,7 +472,7 @@
             </div>
           {% endif %}
 
-          <div id="new-address-panel" class="col-12 address-panel" {% if user.is_authenticated %}style="display:none;"{% endif %}>
+          <div id="new-address-panel" class="col-12 address-panel" {% if user.is_authenticated and saved_addresses %}style="display:none;"{% endif %}>
             <input type="hidden" name="address_mode" id="newAddressMode" value="new">
             <div class="mini-label mb-3">Add a new address</div>
 
@@ -746,13 +746,9 @@
       const addressModeField = document.getElementById('addressModeField');
       const savedPanel = document.getElementById('saved-address-panel');
       const newPanel = document.getElementById('new-address-panel');
-      if (addressModeField) {
-        if (savedPanel && newPanel) {
-          const usingSaved = savedPanel.style.display !== 'none' && savedPanel.style.display !== 'hidden';
-          addressModeField.value = usingSaved ? 'saved' : 'new';
-        } else {
-          addressModeField.value = 'saved';
-        }
+      if (addressModeField && newPanel) {
+        const usingSaved = savedPanel && savedPanel.style.display !== 'none' && savedPanel.style.display !== 'hidden';
+        addressModeField.value = usingSaved ? 'saved' : 'new';
       }
     }
 
@@ -778,14 +774,10 @@
         const savedPanel = document.getElementById('saved-address-panel');
         const newPanel = document.getElementById('new-address-panel');
 
-        if (savedPanel && newPanel) {
-          if (mode === 'saved') {
-            savedPanel.style.display = 'block';
-            newPanel.style.display = 'none';
-          } else {
-            savedPanel.style.display = 'none';
-            newPanel.style.display = 'block';
-          }
+        if (newPanel) {
+          const usingSaved = mode === 'saved' && savedPanel;
+          if (savedPanel) savedPanel.style.display = usingSaved ? 'block' : 'none';
+          newPanel.style.display = usingSaved ? 'none' : 'block';
         }
 
         syncSelectedAddressToOrderForm();
@@ -827,8 +819,8 @@
       const addressModeField = document.getElementById('addressModeField');
       const savedPanel = document.getElementById('saved-address-panel');
       const newPanel = document.getElementById('new-address-panel');
-      if (addressModeField && savedPanel && newPanel) {
-        addressModeField.value = savedPanel.style.display !== 'none' && savedPanel.style.display !== 'hidden' ? 'saved' : 'new';
+      if (addressModeField && newPanel) {
+        addressModeField.value = savedPanel && savedPanel.style.display !== 'none' && savedPanel.style.display !== 'hidden' ? 'saved' : 'new';
       }
 
       if (newPanel && newPanel.style.display !== 'none' && newPanel.style.display !== 'hidden') {
